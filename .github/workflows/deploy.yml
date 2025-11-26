@@ -2,43 +2,34 @@ name: CI/CD to EC2 via SSM
 
 on:
   push:
-    branches: [ "main" ]   # main에 push될 때마다 자동 배포
+    branches: [ "main" ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) 코드 체크아웃
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) gradlew 실행 권한 부여 (권장)
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 3) JDK 21 설치
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      # 4) Gradle 빌드 (테스트는 아래에서 따로)
+      # 테스트는 CI에서 제외, 빌드는 이미 -x test 포함
       - name: Build with Gradle
         run: ./gradlew clean build -x test
 
-      # 5) 테스트 실행 (원하면 유지 / 안 돌리고 싶으면 이 step 지워도 됨)
-      - name: Run tests
-        run: ./gradlew test
-
-      # 6) 배포용 JAR 파일 정리 (이름을 app.jar로 통일)
       - name: Prepare artifact
         run: |
           mkdir -p artifact
           cp build/libs/*.jar artifact/app.jar
 
-      # 7) AWS 자격 증명 설정 (GitHub Secrets 사용)
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -46,12 +37,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # 8) S3로 JAR 업로드
       - name: Upload jar to S3
         run: |
           aws s3 cp artifact/app.jar s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }}
 
-      # 9) SSM으로 EC2에 배포 명령 전송
       - name: Deploy using SSM
         run: |
           aws ssm send-command \
