@@ -9,5 +9,8 @@ class ProjectOnApplicationTests {
 	@Test
 	void contextLoads() {
 	}
+	@Test
+	void contextLoads2() {
+	}
 
 }
