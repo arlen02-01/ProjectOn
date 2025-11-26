@@ -8,6 +8,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
+    env:
+      APP_PATH: /home/ec2-user/app.jar
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,19 +46,45 @@ jobs:
 
       - name: Upload jar to S3
         run: |
-          aws s3 cp artifact/app.jar s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }}
+          aws s3 cp artifact/app.jar s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }} --no-progress
 
       - name: Deploy using SSM
+        env:
+          EC2_INSTANCE: ${{ secrets.SSM_INSTANCE_ID }}
+          DEPLOY_BUCKET: ${{ secrets.DEPLOY_S3_BUCKET }}
+          DEPLOY_KEY: ${{ secrets.DEPLOY_S3_KEY }}
         run: |
-          aws ssm send-command \
-            --instance-ids ${{ secrets.SSM_INSTANCE_ID }} \
+          # 1) SSM으로 명령 전송 (stop -> cp -> start)
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$EC2_INSTANCE" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy new jar and restart service" \
-            --parameters commands="[
-              \"sudo systemctl stop myapp\",
-              \"sudo aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }} /home/ec2-user/app.jar\",
-              \"sudo systemctl start myapp\"
-            ]" \
-            --output text
+            --parameters "{\"commands\":[\"sudo systemctl stop myapp || true\",\"sudo aws s3 cp s3://$DEPLOY_BUCKET/$DEPLOY_KEY $APP_PATH\",\"sudo systemctl start myapp\"]}" \
+            --query "Command.CommandId" \
+            --output text)
 
+          echo "SSM Command ID: $COMMAND_ID"
 
+          # 2) 명령 실행 결과 대기 및 확인
+          for i in {1..30}; do
+            STATUS=$(aws ssm list-command-invocations \
+              --command-id "$COMMAND_ID" \
+              --details \
+              --query "CommandInvocations[0].Status" \
+              --output text)
+
+            echo "Current SSM status: $STATUS"
+
+            if [ "$STATUS" = "Success" ]; then
+              echo "Deploy success via SSM"
+              exit 0
+            elif [ "$STATUS" = "Failed" ] || [ "$STATUS" = "Cancelled" ] || [ "$STATUS" = "TimedOut" ]; then
+              echo "Deploy failed with status: $STATUS"
+              exit 1
+            fi
+
+            sleep 5
+          done
+
+          echo "Deploy did not finish in time"
+          exit 1
