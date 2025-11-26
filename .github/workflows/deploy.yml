@@ -59,7 +59,7 @@ jobs:
             --instance-ids "$EC2_INSTANCE" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy new jar and restart service" \
-            --parameters "{\"commands\":[\"sudo systemctl stop myapp || true\",\"sudo aws s3 cp s3://$DEPLOY_BUCKET/$DEPLOY_KEY $APP_PATH\",\"sudo systemctl start myapp\"]}" \
+            --parameters "{\"commands\":[\"sudo systemctl stop myapp || true\",\"sudo pkill -9 -f app.jar || true\",\"sudo aws s3 cp s3://$DEPLOY_BUCKET/$DEPLOY_KEY $APP_PATH\",\"sudo systemctl start myapp\"]}" \
             --query "Command.CommandId" \
             --output text)
 
