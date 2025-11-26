@@ -20,11 +20,7 @@ import lombok.RequiredArgsConstructor;
 @Controller @RequestMapping("/board") @RequiredArgsConstructor
 public class BoardController {
 	private final BoardService boardService;
-	
-	@GetMapping("/__version")
-	public String version() {
-	    return "version-2025-11-26-01";
-	}
+
 	@GetMapping
 	public String list(
 			@RequestParam(name = "page", defaultValue = "0") int page,
