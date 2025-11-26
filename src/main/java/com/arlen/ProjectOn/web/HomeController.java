@@ -10,7 +10,7 @@ public class HomeController {
     @GetMapping("/__version")
     @ResponseBody
     public String version() {
-        return "check1";
+        return "version-2025-11-26-01";
     }
     
     @GetMapping("/")
