@@ -1,0 +1,61 @@
+name: CI/CD to EC2 via SSM
+
+on:
+  push:
+    branches: [ "main" ]   # main에 push하면 자동 배포
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2) JDK 설치
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3) 빌드
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      # 4) 테스트 실행(선택)
+      - name: Run tests
+        run: ./gradlew test
+
+      # 5) 배포용 JAR 파일 추출
+      - name: Prepare artifact
+        run: |
+          mkdir -p artifact
+          cp build/libs/*.jar artifact/app.jar
+
+      # 6) AWS 자격 증명 설정 (GitHub Secrets 사용)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # 7) jar 파일을 S3로 업로드
+      - name: Upload jar to S3
+        run: |
+          aws s3 cp artifact/app.jar s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }}
+
+      # 8) SSM 명령으로 EC2 배포
+      - name: Deploy using SSM
+        run: |
+          aws ssm send-command \
+            --instance-ids ${{ secrets.SSM_INSTANCE_ID }} \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy new jar and restart service" \
+            --parameters commands="[
+              \"sudo aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }} /opt/myapp/app.jar\",
+              \"sudo systemctl restart myapp\"
+            ]" \
+            --output text
