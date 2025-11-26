@@ -1,0 +1,53 @@
+<!-- src/main/resources/templates/fragments/nav.html -->
+<nav th:fragment="nav" class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" th:href="@{/}">ProjectON</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- 좌측 -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link"
+             th:classappend="${#strings.equals(currentPath, '/') ? 'active' : ''}"
+             th:href="@{/}">홈</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link"
+             th:classappend="${currentPath != null && #strings.startsWith(currentPath, '/board') ? 'active' : ''}"
+             th:href="@{/board}">자유게시판</a>
+        </li>
+        <li class="nav-item" th:if="${currentUser != null}">
+          <a class="nav-link"
+             th:classappend="${currentPath != null && #strings.startsWith(currentPath, '/project') ? 'active' : ''}"
+             th:href="@{/project/new}">프로젝트 만들기</a>
+        </li>
+      </ul>
+
+      <!-- 우측 -->
+      <ul class="navbar-nav align-items-center gap-2">
+        <li class="nav-item d-flex align-items-center gap-2" th:if="${currentUser != null}">
+          <span class="text-secondary small">
+            <i class="bi bi-person-circle"></i>
+            <span th:text="${currentUser}">user</span> 님
+          </span>
+          <a class="btn btn-sm btn-primary" th:href="@{/board/write}">글쓰기</a>
+          <form th:action="@{/auth/logout}" method="post" class="d-inline">
+            <input type="hidden" th:if="${_csrf != null}"
+                   th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="btn btn-sm btn-outline-secondary">로그아웃</button>
+          </form>
+        </li>
+
+        <li class="nav-item d-flex align-items-center gap-2" th:if="${currentUser == null}">
+          <a class="btn btn-sm btn-outline-primary" th:href="@{/auth/login}">로그인</a>
+          <a class="btn btn-sm btn-primary" th:href="@{/auth/signup}">회원가입</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

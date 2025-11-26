@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('게시글 상세 - ProjectON')"></head>
+<body>
+<th:block th:replace="fragments/nav :: nav"></th:block>
+
+<main class="container" style="padding:40px 0;max-width:960px">
+  <article class="card" style="padding:40px;border-radius:24px">
+    <header style="margin-bottom:24px">
+      <h1 th:text="${post.title}" style="margin:0 0 8px;font-size:28px;color:#222"></h1>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div class="muted">
+          <span th:text="${post.author}">작성자</span>
+          <span style="margin:0 6px">·</span>
+          <span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">
+            2025-10-20 14:00
+          </span>
+        </div>
+        <div>
+          <a class="btn btn-outline" th:href="@{/board}">목록</a>
+        </div>
+      </div>
+    </header>
+
+    <section style="white-space:pre-wrap;line-height:1.6;font-size:17px;color:#333"
+             th:text="${post.content}">
+      게시글 내용입니다.
+    </section>
+  </article>
+
+  <!-- 작성자 본인만 수정/삭제 버튼 표시 -->
+  <section class="actions"
+           style="margin-top:24px;display:flex;gap:8px;justify-content:flex-end"
+           th:if="${#strings.equals(currentUser, post.author)}">
+
+    <a class="btn btn-primary" th:href="@{'/board/edit/' + ${post.id}}">수정</a>
+
+    <!-- 삭제 (POST로 /board/delete/{id} 전송) -->
+    <form th:action="@{'/board/delete/' + ${post.id}}" method="post" style="display:inline;"
+          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+      <input type="hidden" th:if="${_csrf != null}"
+             th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <button class="btn btn-outline-danger" type="submit">삭제</button>
+    </form>
+  </section>
+</main>
+
+<th:block th:replace="fragments/footer :: footer"></th:block>
+</body>
+</html>

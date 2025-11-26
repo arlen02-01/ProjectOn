@@ -1,0 +1,30 @@
+<!-- src/main/resources/templates/fragments/head.html -->
+<head th:fragment="head(title='ProjectON')" xmlns:th="http://www.thymeleaf.org">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="${title}">ProjectON</title>
+
+  <!-- ✅ Bootstrap CSS (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <!-- ✅ Bootstrap Icons (nav에서 bi-person-circle 사용 시 필요) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- 프로젝트 공통 스타일 -->
+  <style>
+    :root{ --bg:#f7f9ff; --card:#fff; --ink:#1a1b21; --muted:#4f5360;
+           --primary:#4a6fff; --accent:#7b67ff; --shadow:0 8px 20px rgba(24,33,77,.08);
+           --radius:16px; --radius-lg:24px; --maxw:1100px; }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#f2f5ff 0%, var(--bg) 60%);
+         font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,"맑은 고딕",sans-serif; line-height:1.5}
+    .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+    .muted{color:var(--muted)}
+    .card{background:#fff;box-shadow:var(--shadow);border-radius:var(--radius-lg);border:1px solid rgba(0,0,0,.06)}
+    .btn-outline{border:1px solid #cfd3e3}
+    .required::after{content:" *"; color:#e03131}
+  </style>
+
+  <!-- ✅ Bootstrap JS (토글 버튼 동작용) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>

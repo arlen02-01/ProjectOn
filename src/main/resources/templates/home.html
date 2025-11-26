@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('ProjectON — 홈')}"></head>
+<body>
+  <!-- ✅ 네비게이션 -->
+  <th:block th:replace="~{fragments/nav :: nav}"></th:block>
+
+  <!-- ✅ Hero 영역 -->
+  <header class="container" style="padding:60px 0 30px">
+    <div class="card"
+         style="border-radius:24px;padding:50px 40px;
+                background:linear-gradient(150deg,#ffffff 0%,#f3f4ff 100%)">
+      <h1 style="margin:0 0 12px;font-size:clamp(28px,4vw,42px);color:#101223">
+        🚀 프로젝트를 <span style="color:var(--primary)">켜다 (ON)</span>
+      </h1>
+      <p class="muted" style="font-size:17px;max-width:650px">
+        비전공자도 따라 할 수 있는 스텝·가이드 기반 협업 플랫폼.
+        자유게시판으로 소통하고, 위저드로 프로젝트를 3분 만에 시작하세요.
+      </p>
+      <div class="d-flex gap-3 mt-3">
+        <a class="btn btn-primary"
+           style="background:linear-gradient(90deg,var(--primary),var(--accent))"
+           th:href="@{/project/new}">프로젝트 만들기</a>
+        <a class="btn btn-outline" th:href="@{/board}">자유게시판 가기</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ✅ 주요 기능 섹션 -->
+  <main class="container">
+    <section style="padding:8px 0 8px">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card p-4 h-100">
+            <h3>🧭 위저드 7단계</h3>
+            <p class="muted">목적·언어·DB·배포 선택만으로 프로젝트 구조 완성.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 h-100">
+            <h3>💬 자유게시판</h3>
+            <p class="muted">목록/작성/상세 + 제목/작성자 검색, 최신/추천 정렬.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 h-100">
+            <h3>📘 역할별 가이드</h3>
+            <p class="muted">PM/BE/FE/Design 맞춤 튜토리얼(읽기 전용).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ✅ 빠르게 시작하기 -->
+    <section class="mt-5">
+      <h2 class="section-title mb-3">빠르게 시작하기</h2>
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="card p-4 h-100">
+            <strong>① 회원가입 / 로그인</strong>
+            <p class="muted">
+              아이디·비번 찾기는 로그인 전, 비번 변경은 로그인 후 개인정보에서.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 h-100">
+            <strong>② 프로젝트 생성</strong>
+            <p class="muted">
+              위저드 완료 후 개요 페이지에서 진행률 확인.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-4 h-100">
+            <strong>③ 자유게시판 활용</strong>
+            <p class="muted">
+              지금은 자유게시판만 CRUD, 나머지는 개발 중.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ✅ 푸터 -->
+  <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+</body>
+</html>

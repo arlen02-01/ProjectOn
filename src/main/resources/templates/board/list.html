@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('자유게시판 - ProjectON')"></head>
+<body>
+<th:block th:replace="fragments/nav :: nav"></th:block>
+
+<main class="container" style="padding:24px 0 40px;max-width:960px">
+  <section style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <h1 style="margin:0">자유게시판</h1>
+    <a class="btn" href="/board/write">새 글 작성</a>
+  </section>
+
+  <!-- 목록 -->
+  <div class="card" th:if="${posts.content.size() > 0}">
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="text-align:left;border-bottom:1px solid #eee">
+          <th style="padding:12px">번호</th>
+          <th style="padding:12px">제목</th>
+          <th style="padding:12px">작성자</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p, idx : ${posts.content}" style="border-bottom:1px solid #f3f3f3">
+          <td style="padding:12px" th:text="${p.id}">1</td>
+          <td style="padding:12px">
+            <a th:href="@{'/board/' + ${p.id}}" th:text="${p.title}">제목</a>
+          </td>
+          <td style="padding:12px" th:text="${p.author}">author</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card" th:if="${posts.content.size() == 0}">
+    <p class="muted">작성된 글이 없습니다. 첫 글을 작성해보세요!</p>
+  </div>
+
+  <!-- 페이징 -->
+  <nav class="actions" style="justify-content:center;margin-top:16px">
+    <a class="btn btn-outline"
+       th:classappend="${posts.first} ? ' disabled'"
+       th:href="@{/board(page=${posts.number-1}, size=${posts.size})}">이전</a>
+
+    <span style="padding:8px 12px">
+      <span th:text="${posts.number + 1}">1</span> /
+      <span th:text="${posts.totalPages == 0 ? 1 : posts.totalPages}">1</span>
+    </span>
+
+    <a class="btn btn-outline"
+       th:classappend="${posts.last} ? ' disabled'"
+       th:href="@{/board(page=${posts.number+1}, size=${posts.size})}">다음</a>
+  </nav>
+</main>
+
+<th:block th:replace="fragments/footer :: footer"></th:block>
+</body>
+</html>

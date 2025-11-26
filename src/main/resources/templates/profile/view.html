@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('개인페이지 - ProjectON')"></head>
+<body>
+<div th:replace="fragments/nav :: nav"></div>
+
+<main class="container" style="padding:24px 0 40px">
+  <h1>개인페이지</h1>
+  <section class="card">
+    <p class="muted">프로필/블로그/기술카드/통계는 순차적으로 제공됩니다.</p>
+    <div class="actions" style="justify-content:flex-start">
+      <a class="btn btn-outline" href="/board">자유게시판</a>
+      <a class="btn btn-outline" href="/">홈으로</a>
+    </div>
+  </section>
+  <div class="card" style="margin-top:12px">
+    <span class="badge">🚧 개발중</span>
+    <p class="muted">지금은 스켈레톤만 제공됩니다.</p>
+  </div>
+</main>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

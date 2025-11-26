@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('500 - ProjectON')"></head>
+<body>
+  <th:block th:replace="fragments/nav :: nav"></th:block>
+  <main class="wrap">
+    <section class="card" style="max-width:720px;text-align:center;border-radius:24px">
+      <div style="font-size:80px;line-height:1;margin:6px 0 10px;background:linear-gradient(90deg,var(--primary),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent" aria-hidden="true">500</div>
+      <h1 style="margin:0 0 8px;color:#101223">서버에 문제가 발생했어요</h1>
+      <p class="muted">잠시 후 다시 시도해 주세요. 문제가 계속되면 관리자에게 알려주세요.</p>
+      <div class="actions">
+        <a class="btn" style="background:linear-gradient(90deg,var(--primary),var(--accent))" href="/">홈으로</a>
+        <a class="btn btn-outline" href="javascript:location.reload()">새로고침</a>
+        <a class="btn btn-outline" href="/board">자유게시판</a>
+      </div>
+    </section>
+  </main>
+  <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
