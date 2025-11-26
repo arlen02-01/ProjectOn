@@ -52,8 +52,10 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --comment "Deploy new jar and restart service" \
             --parameters commands="[
+              \"sudo systemctl stop myapp\",
               \"sudo aws s3 cp s3://${{ secrets.DEPLOY_S3_BUCKET }}/${{ secrets.DEPLOY_S3_KEY }} /home/ec2-user/app.jar\",
-              \"sudo systemctl restart myapp\"
+              \"sudo systemctl start myapp\"
             ]" \
             --output text
+
 
